@@ -1,11 +1,15 @@
+//  Program for the pre-airing Morning Announcements time!
+//  ~Ethan
+
+
 var borderWidth;
 var fontSize = 72;
 
 var d;
 
-/*  COLORS
- *  From material.io
-*/
+//  COLORS!
+//  From material.io
+//  But without all the shadows and good-looking bits of material.
 
 var primMain;
 var primLight;
@@ -62,22 +66,17 @@ function setup() {
     noStroke();
     defineColors();
     d = new(Date);
-
-    //  MODS
-    modBallsSetup();
-
+    modSetup(); // modules!
 }
 
 function draw() {
+    d = new Date();
     background(primDark);
     fill(primLight);
     rect(borderWidth,borderWidth,width-(borderWidth*2),height-(borderWidth*2))
-
-    //  MODS
-    modBalls();
-
+    modLoop(); // modules!
     textAlign(CENTER);
-    fill(secMain);
+    fill(primText);
     text("Laffayette",width/2,height/2 + (fontSize + 8)*-1);
     text("Morning Announcements",width/2,height/2 + (fontSize+8)*0);
     text(dispDay[d.getDay()] + ", " + dispMonth[d.getMonth()] + " " + d.getDate(),width/2, height/2 + (fontSize+8)*1)
