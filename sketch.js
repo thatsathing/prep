@@ -1,10 +1,9 @@
 //  Program for the pre-airing Morning Announcements time!
 //  ~Ethan
 
-
-var borderWidth;
 var fontSize = 72;
 
+var borderWidth;
 var d;
 
 //  COLORS!
@@ -22,41 +21,22 @@ var secDark;
 var secText;
 
 function defineColors() {
+    //  Orange 500
     primMain = color('#ff9800')
     primLight = color('#ffc947')
     primDark = color('#c66900')
     primText = color('#000000')
 
+    //  Grey 900
     secMain = color('#212121')
     secLight = color('#585858')
     secDark = color('#000000')
     secText = color('#ffffff')
 }
 
-var dispDay = [
-    "Sunday",
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday"
-]
+var dispDay = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]
 
-var dispMonth = [
-    "January",
-    "Februrary",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December"
-]
+var dispMonth = ["January","Februrary","March","April","May","June","July","August","September","October","November","December"]
 
 
 function setup() {
@@ -66,7 +46,7 @@ function setup() {
     noStroke();
     defineColors();
     d = new(Date);
-    modSetup(); // modules!
+    modSetup();
 }
 
 function draw() {
@@ -74,7 +54,7 @@ function draw() {
     background(primDark);
     fill(primLight);
     rect(borderWidth,borderWidth,width-(borderWidth*2),height-(borderWidth*2))
-    modLoop(); // modules!
+    modLoop();
     textAlign(CENTER);
     fill(primText);
     text("Laffayette",width/2,height/2 + (fontSize + 8)*-1);
