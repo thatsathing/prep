@@ -12,41 +12,60 @@
  *  if you need the values, they are the values of Grey 900 from material.io/color
  *
  */
-var modFW_grav = 4
-var fw;
+var modFW_grav = 7
+var fw = [];
 
 function modSetup() {
-  fw = new firework();
+  fw.push(new firework())
 }
 
 function modLoop() {
-  fw.particle.show();
-  fw.particle.update();
+  for (var i = 0; i < fw.length; i++) {
+    fw[i].update();
+    fw[i].show();
+    if (fw[i].yAcc >= 0) {
+      fw.splice(i)
+    }
+  }
+  if (random(0,1) < .5) {
+    fw.push(new firework())
+  }
 }
 
 function firework() {
   this.x = random(0,width);
   this.y = 0;
   this.yVel = 0;
-  this.yAcc = random(150,200);
-  this.hue = random(0,255);
-  this.particle = new particle(this.x,this.y,this.hue,true);
+  this.yAcc = random(3,8);
+  this.hue = floor(random(0,255))
 }
 
-function particle(x,y,hue,fw) {
+function particle(x,y,hue) {
   this.x = x;
   this.y = y;
-  this.xVel = 0;
+  this.yVel = 0;
   this.yAcc = 0;
   this.lifespan = 250;
-  this.fw = fw
+  this.hue = hue
+}
+
+firework.prototype.update = function() {
+  this.yAcc += modFW_grav;
+  this.yVel += this.yAcc
+  this.y += this.yVel
+  this.yAcc = 0;
+}
+
+firework.prototype.show = function() {
+  fill(this.hue,100,50);
+  ellipse(this.x,this.y,5,5);
 }
 
 particle.prototype.show = function() {
   ellipseMode(CENTER);
   colorMode(HSB, 100);
   fill(120,255);
-  ellipse(this.x,this.y,8,8);
+  ellipse(this.x,this.y,2,2);
 }
 
 particle.prototype.update = function() {
