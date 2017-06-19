@@ -1,84 +1,76 @@
-var modSnow_arr = [];
-var modSnow_rad = 6
-var modSnow_grav = .05
+/* This is the template file for what I'm calling a module.
+ *
+ * A few key things to note here:
+ *
+ * The function 'modSetup()' is run at the very end of setup
+ * The function 'modLoop()'  is the last thing run before the text in the draw loop.
+ * Try to use the colors:
+ *      secMain
+ *      secLight
+ *      secDark
+ * and  secText,
+ *  if you need the values, they are the values of Grey 900 from material.io/color
+ *
+ */
+var modFW_grav = 7
+var fw = [];
 
 function modSetup() {
-  for (var i = 0; i < width-width/6; i++) {
-    modSnow_arr[i] = new modSnow_obj();
-  }
+  fw.push(new firework())
 }
 
 function modLoop() {
-  modCheckKeys();
-  for (var i = 0; i < modSnow_arr.length; i++) {
-    modSnow_arr[i].show();
-    modSnow_arr[i].update();
-  }
-  fill(255);
-  rect(0,height-floor(width/25)+8,width,floor(width/25));
-}
-
-function modCheckKeys() {
-  if (keyIsDown(LEFT_ARROW)) {
-    for (var i = 0; i < modSnow_arr.length; i++) {
-      modSnow_arr[i].xAcc += -.5;
+  for (var i = 0; i < fw.length; i++) {
+    fw[i].update();
+    fw[i].show();
+    if (fw[i].yAcc >= 0) {
+      fw.splice(i)
     }
   }
-  if (keyIsDown(RIGHT_ARROW)) {
-    for (var i = 0; i < modSnow_arr.length; i++) {
-      modSnow_arr[i].xAcc += .5;
-    }
-  }
-  if (keyIsDown(UP_ARROW)) {
-    for (var i = 0; i < modSnow_arr.length; i++) {
-      modSnow_grav += -.00003;
-      if (modSnow_grav <= 0) {
-        modSnow_grav = 0.01
-      }
-    }
-  }
-  if (keyIsDown(DOWN_ARROW)) {
-    for (var i = 0; i < modSnow_arr.length; i++) {
-      modSnow_grav += .00003;
-      if (modSnow_grav >= .1) {
-        modSnow_grav = .09
-      }
-    }
+  if (random(0,1) < .5) {
+    fw.push(new firework())
   }
 }
 
-function modSnow_obj() {
+function firework() {
   this.x = random(0,width);
-  this.y = random(-10000,0);
-  this.xVel = random(3,4);
-  this.xAcc = 0;
-  this.yVel = 1;
+  this.y = 0;
+  this.yVel = 0;
+  this.yAcc = random(3,8);
+  this.hue = floor(random(0,255))
+}
+
+function particle(x,y,hue) {
+  this.x = x;
+  this.y = y;
+  this.yVel = 0;
+  this.yAcc = 0;
+  this.lifespan = 250;
+  this.hue = hue
+}
+
+firework.prototype.update = function() {
+  this.yAcc += modFW_grav;
+  this.yVel += this.yAcc
+  this.y += this.yVel
   this.yAcc = 0;
 }
 
-modSnow_obj.prototype.show = function() {
-  ellipseMode(CENTER);
-  fill('#ffffff');
-  ellipse(this.x%width,this.y,modSnow_rad*2,modSnow_rad*2)
+firework.prototype.show = function() {
+  fill(this.hue,100,50);
+  ellipse(this.x,this.y,5,5);
 }
 
-modSnow_obj.prototype.update = function() {
-  this.xAcc += random(-.03,.03)
-  this.xVel += this.xAcc;
-  this.xAcc = 0
-  this.yAcc += modSnow_grav
+particle.prototype.show = function() {
+  ellipseMode(CENTER);
+  colorMode(HSB, 100);
+  fill(120,255);
+  ellipse(this.x,this.y,2,2);
+}
+
+particle.prototype.update = function() {
+  this.yAcc += modFW_grav;
   this.yVel += this.yAcc
-  this.yAcc = 0
-  this.x += this.xVel
   this.y += this.yVel
-  if (this.y >= height) {
-    this.y = random(-500,-100);
-    this.yVel = 0;
-  }
-  if (this.xVel >= 24) {
-    this.xAcc += -1
-  }
-  if (this.xVel <= -24) {
-    this.xAcc += 1
-  }
+
 }
