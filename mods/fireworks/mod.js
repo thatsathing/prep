@@ -22,7 +22,7 @@ function modLoop() {
       fw.splice(i);
     }
   }
-  if (random(0,1) < .05) {
+  if (random(0,1) < .005) {
     fw.push(new firework())
   }
 
@@ -91,7 +91,4 @@ particle.prototype.update = function() {
   this.xAcc = 0
 
   this.lifespan *= .97
-  if(this.yVel > 8) {
-    this.yVel = 0
-  }
 }

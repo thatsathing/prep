@@ -1,95 +1,84 @@
-/*  Is 'ayy' still a meme? 'ayy' is probably gonna be like what rage comics are now by the time someone reads this.
- *  Fireworks module
- *  ~ Ethan
- */
-var modFW_grav = .2
-var fw = [];
-var particles = [];
-var backGroundUseAlpha = true;
+var modSnow_arr = [];
+var modSnow_rad = 6
+var modSnow_grav = .05
 
 function modSetup() {
-  fw.push(new firework())
+  for (var i = 0; i < width-width/6; i++) {
+    modSnow_arr[i] = new modSnow_obj();
+  }
 }
 
 function modLoop() {
-  for (var i = 0; i < fw.length; i++) {
-    fw[i].update();
-    fw[i].show();
-    if (fw[i].yVel >= -4) {
-      fw[i].boom();
-      fw.splice(i);
+  modCheckKeys();
+  for (var i = 0; i < modSnow_arr.length; i++) {
+    modSnow_arr[i].show();
+    modSnow_arr[i].update();
+  }
+  fill(255);
+  rect(0,height-floor(width/25)+8,width,floor(width/25));
+}
+
+function modCheckKeys() {
+  if (keyIsDown(LEFT_ARROW)) {
+    for (var i = 0; i < modSnow_arr.length; i++) {
+      modSnow_arr[i].xAcc += -.5;
     }
   }
-  if (random(0,1) < .05) {
-    fw.push(new firework())
+  if (keyIsDown(RIGHT_ARROW)) {
+    for (var i = 0; i < modSnow_arr.length; i++) {
+      modSnow_arr[i].xAcc += .5;
+    }
   }
-
-  for (var i = 0; i < particles.length; i++) {
-    particles[i].show()
-    particles[i].update()
-    if (floor(particles[i].lifespan) <= 2) {
-      particles.splice(i)
+  if (keyIsDown(UP_ARROW)) {
+    for (var i = 0; i < modSnow_arr.length; i++) {
+      modSnow_grav += -.00003;
+      if (modSnow_grav <= 0) {
+        modSnow_grav = 0.01
+      }
+    }
+  }
+  if (keyIsDown(DOWN_ARROW)) {
+    for (var i = 0; i < modSnow_arr.length; i++) {
+      modSnow_grav += .00003;
+      if (modSnow_grav >= .1) {
+        modSnow_grav = .09
+      }
     }
   }
 }
 
-function firework() {
+function modSnow_obj() {
   this.x = random(0,width);
-  this.y = height;
-  this.yVel = 0;
-  this.yAcc = random(-8,-15);
-  this.hue = floor(random(0,360))
-}
-
-function particle(x,y,hue,xAcc,yAcc) {
-  this.x = x;
-  this.y = y;
-  this.xVel = 0;
-  this.xAcc = xAcc;
-  this.yVel = 0;
-  this.yAcc = yAcc;
-  this.lifespan = 250;
-  this.hue = hue;
-}
-
-firework.prototype.update = function() {
-  this.yAcc += modFW_grav;
-  this.yVel += this.yAcc
-  this.y += this.yVel
+  this.y = random(-10000,0);
+  this.xVel = random(3,4);
+  this.xAcc = 0;
+  this.yVel = 1;
   this.yAcc = 0;
 }
 
-firework.prototype.show = function() {
-  colorMode(HSB, 360, 100, 100, 255);
-  fill(this.hue,200,100,255);
-  ellipse(this.x,this.y,10,10);
-}
-
-firework.prototype.boom = function() {
-  for (var i = 0; i < random(100,150); i++) {
-    particles.push(new particle(this.x,this.y,this.hue,random(-8,8),random(-.5,-2.3)))
-  }
-}
-
-particle.prototype.show = function() {
+modSnow_obj.prototype.show = function() {
   ellipseMode(CENTER);
-  colorMode(HSB, 360, 100, 100, 255);
-  fill(this.hue,100,100,this.lifespan);
-  ellipse(this.x,this.y,5,5);
+  fill('#ffffff');
+  ellipse(this.x%width,this.y,modSnow_rad*2,modSnow_rad*2)
 }
 
-particle.prototype.update = function() {
-  this.yAcc += modFW_grav;
-  this.yVel += this.yAcc
-  this.y += this.yVel
-
-  this.xVel += this.xAcc
-  this.xVel *= .98
-  this.x += this.xVel
+modSnow_obj.prototype.update = function() {
+  this.xAcc += random(-.03,.03)
+  this.xVel += this.xAcc;
   this.xAcc = 0
-
-  this.lifespan *= .97
-  if(this.yVel > 8) {
-    this.yVel = 0
+  this.yAcc += modSnow_grav
+  this.yVel += this.yAcc
+  this.yAcc = 0
+  this.x += this.xVel
+  this.y += this.yVel
+  if (this.y >= height) {
+    this.y = random(-500,-100);
+    this.yVel = 0;
+  }
+  if (this.xVel >= 24) {
+    this.xAcc += -1
+  }
+  if (this.xVel <= -24) {
+    this.xAcc += 1
   }
 }
